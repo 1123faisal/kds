@@ -1,8 +1,13 @@
 <div class="container-fluid page-body-wrapper" *ngIf="pageDate.length">
     <div class="main-panel">
-        <h1> </h1>
+
         <div class="content-wrapper">
+
             <div class="row summery flex-container">
+
+                <button type="button" (click)="prev()" id="prev1" [disabled]="pageNumber==1?true:false" class="btn btn-primary"><h3>&#60;</h3></button>
+                <button type="button" (click)="next()" id="prev2" [disabled]="lastPage==pageNumber?true:false" class="btn btn-success"><h3>&#62;</h3></button>
+
                 <div class="scrollable horizontal">
                     <div>
 
@@ -32,12 +37,13 @@
                     </div>
                 </div>
             </div>
-            <div class="template-demo template-demo1">
+            <!-- <div class="template-demo template-demo1">
                 <button type="button" id="prev" (click)="prev()" [disabled]="pageNumber==1?true:false" class="btn btn-primary">previous</button>
                 <button type="button" id="next" (click)="next()" [disabled]="lastPage==pageNumber?true:false" class="btn btn-success">Next</button>
 
-            </div>
+            </div> -->
         </div>
+
 
     </div>
     <!-- content-wrapper ends -->

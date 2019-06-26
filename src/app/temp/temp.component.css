@@ -5,3 +5,29 @@
 .C {
     box-shadow: 0px 3px 6px 2px;
 }
+
+#prev1 {
+    height: 50px;
+    width: 50px;
+    position: absolute;
+    top: 50%;
+    left: 2%;
+    border-radius: 50%;
+}
+
+#prev1 h3 {
+    margin: -6px;
+}
+
+#prev2 {
+    position: absolute;
+    height: 50px;
+    width: 50px;
+    right: 2%;
+    top: 50%;
+    border-radius: 50%;
+}
+
+#prev2 h3 {
+    margin: -6px;
+}

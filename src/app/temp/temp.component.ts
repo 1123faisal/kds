@@ -29,16 +29,14 @@ export class TempComponent implements OnInit,OnDestroy {
   kotStatus=0;
 
   
-  
   constructor(private authService:AuthService,private commonService:CommonService,private serTem:TempService) { }
 
   ngOnInit() {
-   
+    
     // this.authService.getPandingKotList().subscribe(rs=>{
       // if(rs){
      
         this.kotList=this.serTem.getList();
-        console.log(this.kotList)
         this.oldItemlength=this.kotList.length;
         this.totalItemLength=this.oldItemlength;
         this.lastPage=this.kotList.length<11? 1:0;
@@ -60,20 +58,44 @@ export class TempComponent implements OnInit,OnDestroy {
      
     // })
 
-  //  this.getNewKotsAfter15Sec();
-
-  this.addtempItem();
+   this.getNewKotsAfter15Sec();
 
   }
 
-  addtempItem(){
-    this.getUpdatedKotListInterval=setInterval(()=>{
-      let data=this.serTem.gettempData();
+  getNewKotsAfter15Sec(){
 
+    this.getUpdatedKotListInterval=setInterval(()=>{
+    let newList:Kot[]=this.serTem.gettempData();
+    let addedNewKot=false;
+     
+    for(let newItem of newList){
+      let exist=false;
+      for(let oldItem of this.kotList){
+        if(oldItem.billId==newItem.billId){
+          exist=true;
+          break;
+        }
+      }
+      if(!exist){
+        this.kotList.push(newItem);
+        addedNewKot=true;
+      }
+    }
+
+    if(addedNewKot){
+      alert('added');
+      this.playSound();
+    }
+    
+    this.copyKotList=JSON.parse(JSON.stringify(this.kotList));
+    this.setLastPage();
+    this.pagination(this.copyKotList, this.pageSize, this.pageNumber) 
+    
     },20000)
   }
 
-  changeTimeEverySecond(){
+
+changeTimeEverySecond(){
 
   this.interval=setInterval(()=>{
   this.copyKotList=JSON.parse(JSON.stringify(this.kotList));
@@ -108,21 +130,6 @@ getKotCreatedTimes(){
 }
 
 
-getNewKotsAfter15Sec(){
-  this.getUpdatedKotListInterval=setInterval(()=>{
-
-    this.authService.getPandingKotList().subscribe(rs=>{
-      if(rs.length!=this.oldItemlength){
-        console.log('new kot available')
-        this.newKotAdd(rs);
-      }else{
-        console.log('getupdatedkotListInterval'); 
-      }
-    });
-
-   },15000)
-}
-
 
 newKotAdd(newKotList:Kot[]){
 
@@ -156,10 +163,11 @@ newKotAdd(newKotList:Kot[]){
   }
 
   setLastPage(){
-    let rem=this.copyKotList.length%this.pageSize;
-    console.log('rem '+rem)
+    let ans=parseInt((this.copyKotList.length/this.pageSize).toFixed(0));
+    let rem=(this.copyKotList.length/this.pageSize);
+    ans<rem? ans++:ans;
     this.lastPage=Math.round((this.copyKotList.length/this.pageSize));
-    this.lastPage=this.lastPage<rem? this.lastPage+1:this.lastPage;
+    this.lastPage=this.lastPage<ans? this.lastPage+1:this.lastPage;
   }
 
   pagination(arr, pageSize, pageNumber) {
@@ -187,13 +195,16 @@ newKotAdd(newKotList:Kot[]){
      }
 
     this.copyKotList=JSON.parse(JSON.stringify(this.kotList));
-    console.log(this.pageNumber)
-    console.log(this.lastPage)
     this.setLastPage();
     this.pagination(this.copyKotList, this.pageSize, this.pageNumber) 
     // },err=>{ alert('Server Error');    })
   }
 
+  playSound(){
+    let audio=new Audio();
+    audio.src="../../assets/ring1.mp3";
+    audio.play();
+  }
 
   ngOnDestroy(){
     if(this.interval && this.getUpdatedKotListInterval){

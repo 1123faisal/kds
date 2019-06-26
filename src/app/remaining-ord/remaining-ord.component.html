@@ -1,7 +1,15 @@
 <div class="container-fluid page-body-wrapper" *ngIf="pageDate.length">
     <div class="main-panel">
+
         <div class="content-wrapper">
+
+
+
             <div class="row summery flex-container">
+
+                <button type="button" (click)="prev()" id="prev1" [disabled]="pageNumber==1?true:false" class="btn btn-primary"><h3>&#60;</h3></button>
+                <button type="button" (click)="next()" id="prev2" [disabled]="lastPage==pageNumber?true:false" class="btn btn-success"><h3>&#62;</h3></button>
+
                 <div class="scrollable horizontal">
                     <div>
 
@@ -9,13 +17,13 @@
 
                         <div class="flex-item" *ngFor="let el of pageDate;let i=index" [ngClass]="oldItemlength>i? '':'newKot'">
                             <div class="card">
-                                <h4 class="card-title"> <span class="kot">{{ el.tableName }}</span> {{ el.waiterName }} <span class="pull-right">Take Away</span></h4>
+                                <h4 class="card-title"> <span class="kot">{{ el.tableName }}-{{ el.billId }}</span> {{ el.waiterName }} <span class="pull-right">Take Away</span></h4>
                                 <h4 class="card-title"> <span class="kot">#{{ el.kotId }}</span><span class="remain">{{ kotTime[i] }}</span> <span class="pull-right">{{ kotCreatedTimes[i] | slice:14:20 }}</span></h4>
                                 <div class="card-body">
                                     <div class="template-demo">
                                         <table class="table mb-0">
                                             <tbody>
-                                                <tr *ngFor="let kot of el.kotItem; let kotItemIndex=index" (click)="clickForChangeKotStatus(el.billId,kotItemIndex,kot.kotItemId,kot.itemStatus)" [ngClass]="kot.status=='P'? 'C':''">
+                                                <tr *ngFor="let kot of el.kotItem; let kotItemIndex=index" (click)="clickForChangeKotStatus(i,el.billId,kotItemIndex,kot.kotItemId,kot.itemStatus)" [ngClass]="kot.status=='P'? 'C':''">
                                                     <td class="pl-0">{{ kot.name | titlecase }}</td>
                                                     <td class="pr-0 text-right">
                                                         <div class="badge">{{ kot.qty }}</div>
@@ -31,12 +39,13 @@
                     </div>
                 </div>
             </div>
-            <div class="template-demo template-demo1">
-                <button type="button" id="prev" (click)="prev()" [disabled]="pageNumber==1?true:false" class="btn btn-primary">previous</button>
-                <button type="button" id="next" (click)="next()" [disabled]="lastPage==pageNumber?true:false" class="btn btn-success">Next</button>
-
-            </div>
+            <!-- <div class="template-demo template-demo1">
+                    <button type="button" id="prev" (click)="prev()" [disabled]="pageNumber==1?true:false" class="btn btn-primary">previous</button>
+                    <button type="button" id="next" (click)="next()" [disabled]="lastPage==pageNumber?true:false" class="btn btn-success">Next</button>
+    
+                </div> -->
         </div>
+
 
     </div>
     <!-- content-wrapper ends -->

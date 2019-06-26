@@ -10,6 +10,7 @@ import { CommonService } from '../service/common.service';
 })
 export class RemainingOrdComponent implements OnInit {
 
+  
   kotList:Kot[];
   copyKotList:Kot[];
   kotCreatedTimes=[];
@@ -61,7 +62,49 @@ export class RemainingOrdComponent implements OnInit {
 
    this.getNewKotsAfter15Sec();
 
+
   }
+
+  getNewKotsAfter15Sec(){
+    
+    this.getUpdatedKotListInterval=setInterval(()=>{
+
+      this.authService.getPandingKotList().subscribe(rs=>{
+
+      if(rs){
+        let newList:Kot[]=rs;
+      let addedNewKot=false;
+       
+      for(let newItem of newList){
+        let exist=false;
+        for(let oldItem of this.kotList){
+          if(oldItem.billId==newItem.billId){
+            exist=true;
+            break;
+          }
+        }
+        if(!exist){
+          this.kotList.push(newItem);
+          addedNewKot=true;
+        }
+      }
+  
+      if(addedNewKot){
+        alert('added');
+        this.playSound();
+      }
+      
+      this.copyKotList=JSON.parse(JSON.stringify(this.kotList));
+      this.setLastPage();
+      this.pagination(this.copyKotList, this.pageSize, this.pageNumber) 
+      }
+      
+         });
+
+      },20000)
+
+  }
+
 
   changeTimeEverySecond(){
 
@@ -85,7 +128,7 @@ compareTime(item:Kot){
   let currentTime=new Date();
   let d= new Date();
   d.setTime(currentTime.getTime()- kotCreatedTime.getTime());
-  subsTime =d.getHours() +":"+ (d.getMinutes().toString().length==1? "0"+d.getMinutes():d.getMinutes()) +":"+ (d.getSeconds().toString().length==1? "0"+d.getSeconds():d.getSeconds());
+  subsTime =(d.getHours().toString().length==1? "0"+d.getHours():d.getHours())  +":"+ (d.getMinutes().toString().length==1? "0"+d.getMinutes():d.getMinutes()) +":"+ (d.getSeconds().toString().length==1? "0"+d.getSeconds():d.getSeconds());
   item.date=subsTime;
   return item;  
 }
@@ -98,20 +141,6 @@ getKotCreatedTimes(){
 }
 
 
-getNewKotsAfter15Sec(){
-  this.getUpdatedKotListInterval=setInterval(()=>{
-
-    this.authService.getPandingKotList().subscribe(rs=>{
-      if(rs.length!=this.oldItemlength){
-        console.log('new kot available')
-        this.newKotAdd(rs);
-      }else{
-        console.log('getupdatedkotListInterval'); 
-      }
-    });
-
-   },15000)
-}
 
 
 newKotAdd(newKotList:Kot[]){
@@ -140,15 +169,17 @@ newKotAdd(newKotList:Kot[]){
   }
 
   next(){
-    let rem=this.copyKotList.length%this.pageSize;
-    this.lastPage=Math.round((this.copyKotList.length/this.pageSize));
-    this.lastPage=this.lastPage<rem? this.lastPage+1:this.lastPage;
+    this.setLastPage();
   this.pageNumber==this.lastPage?this.pageNumber:this.pageNumber++;
-  console.log(this.copyKotList);
-  console.log('lastPage '+this.lastPage);
-  console.log('pageSize '+this.pageSize);
-  console.log('pageNumber '+this.pageNumber);
   this.pagination(this.copyKotList,this.pageSize,this.pageNumber);
+  }
+
+  setLastPage(){
+    let ans=parseInt((this.copyKotList.length/this.pageSize).toFixed(0));
+    let rem=(this.copyKotList.length/this.pageSize);
+    ans<rem? ans++:ans;
+    this.lastPage=Math.round((this.copyKotList.length/this.pageSize));
+    this.lastPage=this.lastPage<ans? this.lastPage+1:this.lastPage;
   }
 
   pagination(arr, pageSize, pageNumber) {
@@ -156,21 +187,35 @@ newKotAdd(newKotList:Kot[]){
       this.pageDate = arr.slice(pageNumber * pageSize, (pageNumber + 1) * pageSize);
   }
 
-
-
-  clickForChangeKotStatus(index,kotItemIndex,kotId,Status){
+  clickForChangeKotStatus(i,index,kotItemIndex,kotId,Status){
     this.authService.clickForChangeKotItemStatus(kotId,Status).subscribe(rs=>{
 
-      for(let e of this.kotList){
-        if(e.billId==index){
-        e.kotItem[kotItemIndex].status=e.kotItem[kotItemIndex].status=="C"? "P":"C";
-        } 
-      }
-  
-      console.log(index+' - '+kotItemIndex)
-        this.copyKotList=JSON.parse(JSON.stringify(this.kotList));
-        this.pagination(this.copyKotList, this.pageSize, this.pageNumber) 
-    })
+    for(let e of this.kotList){
+      if(e.billId==index){
+      e.kotItem[kotItemIndex].status=e.kotItem[kotItemIndex].status=="C"? "P":"C";
+      } 
+    }
+
+    let countKot=this.kotList[i].kotItem.length;
+    let count=0;
+    this.kotList[i].kotItem.filter(item=>{ 
+      item.status=="P" ? count++:count;
+     })
+
+     if(countKot==count){
+        this.kotList.splice(i,1);
+     }
+
+    this.copyKotList=JSON.parse(JSON.stringify(this.kotList));
+    this.setLastPage();
+    this.pagination(this.copyKotList, this.pageSize, this.pageNumber) 
+    },err=>{ alert('Server Error');    })
+  }
+
+  playSound(){
+    let audio=new Audio();
+    audio.src="../../assets/ring1.mp3";
+    audio.play();
   }
 
 
