@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>ProjectKidsNg</title>
+    <base href="/">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Kitchen Display System | KDS</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="assets/kds/themify-icons.css">
+    <link rel="stylesheet" href="assets/kds/vendor.bundle.base.css">
+    <link rel="stylesheet" href="assets/kds/vendor.bundle.addons.css">
+    <!-- endinject -->
+    <!-- plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="assets/kds/style.css">
+    <!-- endinject -->
+    <link rel="shortcut icon" href="assets/kds/logo.jpg" />
+    <link href="https://fonts.googleapis.com/css?family=Cabin|Lato|Roboto|Source+Sans+Pro:600" rel="stylesheet">
+    <style>
+        tr.selected {
+            background-color: rgba(41, 103, 182, 0.89);
+            color: #FFF;
+        }
+    </style>
+
+
+
+    <script src="assets/kds/js/template.js"></script>
+    <script src="assets/kds/js/vendor.bundle.base.js"></script>
+    <script src="assets/kds/js/vendor.bundle.addons.js"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page-->
+    <!-- End custom js for this page-->
+    <script src="assets/kds/js/avgrund.js"></script>
+    <script>
+        $("tr").click(function() {
+            $(this).parent().children().removeClass("selected");
+            $(this).addClass("selected");
+        });
+    </script>
+
+</head>
+
+<body>
+    <app-root></app-root>
+</body>
+
+</html>

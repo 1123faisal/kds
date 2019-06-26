@@ -1,0 +1,48 @@
+<div class="container-scroller">
+    <div class="container-fluid page-body-wrapper full-page-wrapper">
+        <div class="main-panel">
+            <div class="content-wrapper d-flex align-items-center auth px-0">
+                <div class="row w-100 mx-0">
+                    <div class="col-lg-4 mx-auto">
+                        <div class="auth-form-light text-left py-5 px-4 px-sm-5">
+                            <div class="brand-logo">
+                                <img src="assets/kds/logo.jpg" alt="logo">
+                            </div>
+                            <h4 class="h4-css">Login to your account</h4>
+                            <!--<h6 class="font-weight-light">Login is easy. It only takes a few Seconds</h6>-->
+                            <form [formGroup]="loginForm" (submit)="submitLogin()" class="pt-3">
+                                <div class="form-group">
+                                    <input type="text" [formControlName]="'username'" class="form-control form-control-lg" placeholder="Username">
+                                    <p class="errMsg" *ngIf="f('username').touched && f('username').hasError('required')">Username is required!</p>
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" [formControlName]="'password'" class="form-control form-control-lg" placeholder="Password">
+                                    <p class="errMsg" *ngIf="f('password').touched && f('password').hasError('required')">Password is required!</p>
+                                </div>
+
+                                <div class="form-group">
+
+                                    <select class="form-control form-control-lg" [formControlName]="'location'">
+                                        <option value="">Select Location</option>
+                                        <option *ngFor="let e of location" [value]="e.name">{{ e.name }}</option>
+                                  </select>
+
+                                    <p class="errMsg" *ngIf="f('location').touched && f('location').hasError('required')">Location is required!</p>
+                                </div>
+
+
+                                <div class="mt-3">
+                                    <button class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" [disabled]="loginForm.invalid" type="submit">Login</button>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- content-wrapper ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+</div>
+<!-- container-scroller -->

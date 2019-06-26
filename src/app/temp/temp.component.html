@@ -1,0 +1,50 @@
+<div class="container-fluid page-body-wrapper" *ngIf="pageDate.length">
+    <div class="main-panel">
+        <h1> </h1>
+        <div class="content-wrapper">
+            <div class="row summery flex-container">
+                <div class="scrollable horizontal">
+                    <div>
+
+                        <!-- {{ 'length='+oldItemlength }} {{ 'totalLength='+totalItemLength }} {{ 'blink='+blinkKotCount }} -->
+
+                        <div class="flex-item" *ngFor="let el of pageDate;let i=index" [ngClass]="oldItemlength>i? '':'newKot'">
+                            <div class="card">
+                                <h4 class="card-title"> <span class="kot">{{ el.tableName }}-{{ el.billId }}</span> {{ el.waiterName }} <span class="pull-right">Take Away</span></h4>
+                                <h4 class="card-title"> <span class="kot">#{{ el.kotId }}</span><span class="remain">{{ kotTime[i] }}</span> <span class="pull-right">{{ kotCreatedTimes[i] | slice:14:20 }}</span></h4>
+                                <div class="card-body">
+                                    <div class="template-demo">
+                                        <table class="table mb-0">
+                                            <tbody>
+                                                <tr *ngFor="let kot of el.kotItem; let kotItemIndex=index" (click)="clickForChangeKotStatus(i,el.billId,kotItemIndex,kot.kotItemId,kot.itemStatus)" [ngClass]="kot.status=='P'? 'C':''">
+                                                    <td class="pl-0">{{ kot.name | titlecase }}</td>
+                                                    <td class="pr-0 text-right">
+                                                        <div class="badge">{{ kot.qty }}</div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="template-demo template-demo1">
+                <button type="button" id="prev" (click)="prev()" [disabled]="pageNumber==1?true:false" class="btn btn-primary">previous</button>
+                <button type="button" id="next" (click)="next()" [disabled]="lastPage==pageNumber?true:false" class="btn btn-success">Next</button>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- content-wrapper ends -->
+    <!-- partial:../../partials/_footer.html -->
+    <!-- partial -->
+</div>
+
+<div style="text-align: center;" *ngIf="!pageDate.length">
+    <h1>Data Not Found.</h1>
+</div>

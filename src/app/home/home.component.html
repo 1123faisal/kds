@@ -1,0 +1,46 @@
+<div class="container-scroller">
+    <!-- partial:../../partials/_horizontal-navbar.html -->
+    <div class="horizontal-menu">
+        <nav class="navbar top-navbar col-lg-12 col-12 p-0">
+            <div class="container-fluid">
+                <div class="col-lg-2 text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+                    <a class="navbar-brand brand-logo" [routerLink]="''"><img src="https://ucarecdn.com/fc69f8f1-dcc9-4837-82c2-69263796b4f2/logo.png" alt="logo" /></a>
+                    <a class="navbar-brand brand-logo-mini" [routerLink]="''"><img src="https://ucarecdn.com/fc69f8f1-dcc9-4837-82c2-69263796b4f2/logo.png" alt="logo" /></a>
+                </div>
+                <div class="col-lg-6 py-1 top-css">
+                    <ul class="nav profile-navbar">
+                        <li class="nav-item">
+                            <a class="nav-link" [routerLink]="'/kot/total'"> <i class="ti-receipt"></i> Total Orders : <span> {{ totalKotListLength }} </span> </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" [routerLink]="'/kot'"> <i class="ti-view-list"></i> Remaining Orders : <span> {{ remainingKotListLength }} </span> </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" [routerLink]="'/kot/complete'"> <i class="ti-check-box"></i> Completed Orders : <span> {{ completeKotListLength }} </span> </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-lg-2  navbar-menu-wrapper d-flex align-items-center justify-content-end">
+                    <ul class="navbar-nav navbar-nav-right">
+                        <li class="nav-item nav-profile dropdown">
+                            <a class="log-out nav-link" [routerLink]="'/login'" data-toggle="dropdown" id="profileDropdown">
+                                <div class="rotate"> <i class="ti-export text-muted mb-0 mb-md-3 mb-xl-0"></i> </div>
+                                LOGOUT </a>
+                        </li>
+                    </ul>
+                    <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="horizontal-menu-toggle"> <span class="ti-menu"></span> </button>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!-- partial -->
+    <router-outlet></router-outlet>
+    <!-- main-panel ends -->
+</div>
+<!-- page-body-wrapper ends -->
+<!-- container-scroller -->
+<!-- plugins:js -->
+<!-- endinject -->
+<!-- Plugin js for this page-->
+<!-- End plugin js for this page-->
+<!-- inject:js -->
