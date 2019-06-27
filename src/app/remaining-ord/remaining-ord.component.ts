@@ -10,7 +10,7 @@ import { CommonService } from '../service/common.service';
 })
 export class RemainingOrdComponent implements OnInit {
 
-  
+ 
   kotList:Kot[];
   copyKotList:Kot[];
   kotCreatedTimes=[];
@@ -29,16 +29,14 @@ export class RemainingOrdComponent implements OnInit {
   kotStatus=0;
 
   
-  
   constructor(private authService:AuthService,private commonService:CommonService) { }
 
   ngOnInit() {
-   
+    
     this.authService.getPandingKotList().subscribe(rs=>{
       if(rs){
      
         this.kotList=rs;
-        console.log(this.kotList)
         this.oldItemlength=this.kotList.length;
         this.totalItemLength=this.oldItemlength;
         this.lastPage=this.kotList.length<11? 1:0;
@@ -62,51 +60,49 @@ export class RemainingOrdComponent implements OnInit {
 
    this.getNewKotsAfter15Sec();
 
-
   }
 
   getNewKotsAfter15Sec(){
-    
+
     this.getUpdatedKotListInterval=setInterval(()=>{
-
-      this.authService.getPandingKotList().subscribe(rs=>{
-
-      if(rs){
-        let newList:Kot[]=rs;
-      let addedNewKot=false;
-       
-      for(let newItem of newList){
-        let exist=false;
-        for(let oldItem of this.kotList){
-          if(oldItem.billId==newItem.billId){
-            exist=true;
-            break;
-          }
-        }
-        if(!exist){
-          this.kotList.push(newItem);
-          addedNewKot=true;
-        }
-      }
   
-      if(addedNewKot){
-        alert('added');
-        this.playSound();
-      }
+   this.authService.getPandingKotList().subscribe(rs=>{
+  
+    if(rs){
       
+    let newList:Kot[]=JSON.parse(JSON.stringify(rs));
+    let addedNewKot=false;
+     
+    for(let newItem of newList){
+      let exist=false;
+      for(let oldItem of this.kotList){
+        if(oldItem.billId==newItem.billId){
+          exist=true;
+          break;
+        }
+      }
+      if(!exist){
+        this.kotList.push(newItem);
+        addedNewKot=true;
+      }
+    }
+
+    if(addedNewKot){
+      alert('added');
+      this.playSound();
       this.copyKotList=JSON.parse(JSON.stringify(this.kotList));
       this.setLastPage();
       this.pagination(this.copyKotList, this.pageSize, this.pageNumber) 
+    }
+
       }
-      
-         });
-
-      },20000)
-
+     })
+     
+    },20000)
   }
 
 
-  changeTimeEverySecond(){
+changeTimeEverySecond(){
 
   this.interval=setInterval(()=>{
   this.copyKotList=JSON.parse(JSON.stringify(this.kotList));
@@ -128,7 +124,7 @@ compareTime(item:Kot){
   let currentTime=new Date();
   let d= new Date();
   d.setTime(currentTime.getTime()- kotCreatedTime.getTime());
-  subsTime =(d.getHours().toString().length==1? "0"+d.getHours():d.getHours())  +":"+ (d.getMinutes().toString().length==1? "0"+d.getMinutes():d.getMinutes()) +":"+ (d.getSeconds().toString().length==1? "0"+d.getSeconds():d.getSeconds());
+  subsTime =(d.getMinutes().toString().length==1? "0"+d.getMinutes():d.getMinutes()) +":"+ (d.getSeconds().toString().length==1? "0"+d.getSeconds():d.getSeconds());
   item.date=subsTime;
   return item;  
 }
@@ -139,7 +135,6 @@ getKotCreatedTimes(){
     }
   this.commonService.remainingKotListLengthEmit(this.oldItemlength);
 }
-
 
 
 
@@ -188,28 +183,31 @@ newKotAdd(newKotList:Kot[]){
   }
 
   clickForChangeKotStatus(i,index,kotItemIndex,kotId,Status){
-    this.authService.clickForChangeKotItemStatus(kotId,Status).subscribe(rs=>{
+    // this.authService.clickForChangeKotItemStatus(kotId,Status).subscribe(rs=>{
 
-    for(let e of this.kotList){
-      if(e.billId==index){
-      e.kotItem[kotItemIndex].status=e.kotItem[kotItemIndex].status=="C"? "P":"C";
-      } 
-    }
-
-    let countKot=this.kotList[i].kotItem.length;
-    let count=0;
-    this.kotList[i].kotItem.filter(item=>{ 
-      item.status=="P" ? count++:count;
-     })
-
-     if(countKot==count){
-        this.kotList.splice(i,1);
-     }
-
-    this.copyKotList=JSON.parse(JSON.stringify(this.kotList));
-    this.setLastPage();
-    this.pagination(this.copyKotList, this.pageSize, this.pageNumber) 
-    },err=>{ alert('Server Error');    })
+      for(let e of this.kotList){
+        if(e.billId==index){
+        e.kotItem[kotItemIndex].status=e.kotItem[kotItemIndex].status=="C"? "P":"C";
+        } 
+      }
+  
+      let countKot=this.kotList[i].kotItem.length;
+      let count=0;
+      this.kotList.filter(item1=>{ if(item1.billId==index){
+           item1.kotItem.filter(item=>{ 
+            item.status=="P" ? count++:count;
+           })
+         } 
+      })
+     
+       if(countKot==count){
+          this.kotList.splice(this.kotList.findIndex(item=>item.billId==index),1);
+       }
+  
+      this.copyKotList=JSON.parse(JSON.stringify(this.kotList));
+      this.setLastPage();
+      this.pagination(this.copyKotList, this.pageSize, this.pageNumber) 
+    // },err=>{ alert('Server Error');    })
   }
 
   playSound(){
@@ -217,7 +215,6 @@ newKotAdd(newKotList:Kot[]){
     audio.src="../../assets/ring1.mp3";
     audio.play();
   }
-
 
   ngOnDestroy(){
     if(this.interval && this.getUpdatedKotListInterval){

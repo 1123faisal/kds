@@ -65,7 +65,7 @@ export class TempComponent implements OnInit,OnDestroy {
   getNewKotsAfter15Sec(){
 
     this.getUpdatedKotListInterval=setInterval(()=>{
-    let newList:Kot[]=this.serTem.gettempData();
+    let newList:Kot[]=JSON.parse(JSON.stringify(this.serTem.gettempData()));
     let addedNewKot=false;
      
     for(let newItem of newList){
@@ -85,12 +85,11 @@ export class TempComponent implements OnInit,OnDestroy {
     if(addedNewKot){
       alert('added');
       this.playSound();
+      this.copyKotList=JSON.parse(JSON.stringify(this.kotList));
+      this.setLastPage();
+      this.pagination(this.copyKotList, this.pageSize, this.pageNumber) 
     }
-    
-    this.copyKotList=JSON.parse(JSON.stringify(this.kotList));
-    this.setLastPage();
-    this.pagination(this.copyKotList, this.pageSize, this.pageNumber) 
-    
+     
     },20000)
   }
 
@@ -117,7 +116,7 @@ compareTime(item:Kot){
   let currentTime=new Date();
   let d= new Date();
   d.setTime(currentTime.getTime()- kotCreatedTime.getTime());
-  subsTime =(d.getHours().toString().length==1? "0"+d.getHours():d.getHours())  +":"+ (d.getMinutes().toString().length==1? "0"+d.getMinutes():d.getMinutes()) +":"+ (d.getSeconds().toString().length==1? "0"+d.getSeconds():d.getSeconds());
+  subsTime =(d.getMinutes().toString().length==1? "0"+d.getMinutes():d.getMinutes()) +":"+ (d.getSeconds().toString().length==1? "0"+d.getSeconds():d.getSeconds());
   item.date=subsTime;
   return item;  
 }
@@ -177,7 +176,7 @@ newKotAdd(newKotList:Kot[]){
 
   clickForChangeKotStatus(i,index,kotItemIndex,kotId,Status){
     // this.authService.clickForChangeKotItemStatus(kotId,Status).subscribe(rs=>{
-
+   
     for(let e of this.kotList){
       if(e.billId==index){
       e.kotItem[kotItemIndex].status=e.kotItem[kotItemIndex].status=="C"? "P":"C";
@@ -186,12 +185,16 @@ newKotAdd(newKotList:Kot[]){
 
     let countKot=this.kotList[i].kotItem.length;
     let count=0;
-    this.kotList[i].kotItem.filter(item=>{ 
-      item.status=="P" ? count++:count;
-     })
+    this.kotList.filter(item1=>{ if(item1.billId==index){
+         item1.kotItem.filter(item=>{ 
+          item.status=="P" ? count++:count;
+         })
+       } 
+    })
+   
 
      if(countKot==count){
-        this.kotList.splice(i,1);
+        this.kotList.splice(this.kotList.findIndex(item=>item.billId==index),1);
      }
 
     this.copyKotList=JSON.parse(JSON.stringify(this.kotList));
